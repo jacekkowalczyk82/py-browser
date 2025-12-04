@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QLineEdit, QToolBar,
@@ -76,10 +77,21 @@ class SimpleBrowser(QMainWindow):
         # Load the URL in the browser
         self.browser.setUrl(QUrl(url_text))
 
+    def save_to_history(self, url):
+        # Save the URL and timestamp to history.txt
+        try:
+            with open("history.txt", "a") as f:
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f"{timestamp} - {url}\n")
+        except Exception as e:
+            print(f"Error saving history: {e}")
+
     def update_url_bar(self, q):
         # Update the URL bar with the currently loaded page's URL
         # Convert QUrl object to a string and display it
-        self.url_bar.setText(q.toString())
+        url_str = q.toString()
+        self.url_bar.setText(url_str)
+        self.save_to_history(url_str)
 
 # Run the Application
 if __name__ == '__main__':
